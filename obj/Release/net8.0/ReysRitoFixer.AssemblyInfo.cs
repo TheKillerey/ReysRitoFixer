@@ -13,11 +13,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProjectRey")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute("ProjectRey")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.1.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.1+981f54214ddc56ea9240f93533e37f548970b58d")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.2.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.2+c204753f4ad2743a08111bb808d1298c36abd9de")]
 [assembly: System.Reflection.AssemblyProductAttribute("ReysRitoFixer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ReysRitoFixer")]
-[assembly: System.Reflection.AssemblyVersionAttribute("1.0.1.0")]
+[assembly: System.Reflection.AssemblyVersionAttribute("1.0.2.0")]
 
 // Von der MSBuild WriteCodeFragment-Klasse generiert.
 

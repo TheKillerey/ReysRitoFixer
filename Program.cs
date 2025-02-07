@@ -32,6 +32,30 @@ internal class Program
             }
         }
     }
+    
+    private static void ValidateFilePermissions(IEnumerable<string> files)
+    {
+        foreach (var file in files)
+        {
+            if (!HasFileAccess(file))
+            {
+                Console.WriteLine($"WARNING: Insufficient permissions to access or modify file: {file}");
+            }
+        }
+    }
+
+    private static bool HasFileAccess(string path)
+    {
+        try
+        {
+            using var stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
     // Version 25.S1.3: Current logic with one replacement
     private static async Task RunPatchFixer25S13()
@@ -86,6 +110,11 @@ internal class Program
         await ConvertBinToPyParallel(ritobinPath, binFiles);
 
         var pyFiles = Directory.GetFiles(modsDirectory, "*.py", SearchOption.AllDirectories);
+
+        // Check for file permissions
+        ValidateFilePermissions(pyFiles);
+
+        // Apply replacements
         ReplaceInPyFiles(pyFiles, replacements);
 
         await ConvertPyToBinParallel(ritobinPath, pyFiles);
@@ -94,9 +123,6 @@ internal class Program
         Console.WriteLine("\nRepacking WAD files...");
         var wadMakePath = Path.Combine(hashesDirectory, "wad-make.exe");
         await RepackWadClientFiles(wadMakePath, wadFiles);
-
-        // Step 6: Backup installed folder
-
 
         Console.WriteLine("\nPatchFixer completed successfully!");
     }
@@ -110,24 +136,45 @@ internal class Program
 
         Parallel.ForEach(pyFileList, pyFile =>
         {
-            var content = File.ReadAllText(pyFile);
-            foreach (var (find, replace) in replacements)
-                // Use case-insensitive Regex.Replace
-                content = Regex.Replace(content, find, replace, RegexOptions.IgnoreCase);
-            File.WriteAllText(pyFile, content);
-            Console.WriteLine($"Updated {pyFile}");
-            Interlocked.Increment(ref processedFiles);
+            try
+            {
+                if (!HasFileAccess(pyFile))
+                {
+                    Console.WriteLine($"Permission denied for file: {pyFile}");
+                    return;
+                }
 
-            // Calculate and display progress
-            var progress = processedFiles * 100 / totalFiles;
-            Console.WriteLine($"Progress: {progress}%");
+                var content = File.ReadAllText(pyFile);
+                foreach (var (find, replace) in replacements)
+                {
+                    // Use case-insensitive Regex.Replace
+                    content = Regex.Replace(content, find, replace, RegexOptions.IgnoreCase);
+                }
+
+                File.WriteAllText(pyFile, content);
+                Console.WriteLine($"Updated {pyFile}");
+                Interlocked.Increment(ref processedFiles);
+
+                // Calculate and display progress
+                var progress = processedFiles * 100 / totalFiles;
+                Console.WriteLine($"Progress: {progress}%");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Permission Error: Cannot update file {pyFile}. Details: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"File Error: Cannot access file {pyFile}. Details: {ex.Message}");
+            }
         });
     }
+    
 
     // Ensure hash files exist (download missing ones)
     private static async Task EnsureHashFiles(string hashesDirectory)
     {
-        string[] hashFiles = new[]
+        string[] hashFiles = 
         {
             "hashes.game.txt",
             "hashes.lcu.txt",
@@ -141,7 +188,9 @@ internal class Program
         if (!allHashesExist)
         {
             Console.WriteLine("\nMissing hash files detected. Downloading...");
-            await DownloadHashFilesInParallel(hashFiles, "https://raw.communitydragon.org/data/hashes/lol/",
+            await DownloadHashFilesInParallel(
+                hashFiles,
+                "https://raw.communitydragon.org/data/hashes/lol/",
                 hashesDirectory);
         }
         else
