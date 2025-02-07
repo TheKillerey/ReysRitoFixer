@@ -11,8 +11,7 @@
         <Copyright>ProjectRey</Copyright>
         <Company>ProjectRey</Company>
         <Version>1.0.1</Version>
-        <SignAssembly>true</SignAssembly>
-        <PublicSign>true</PublicSign>
+        <PublicSign>false</PublicSign>
     </PropertyGroup>
 
     <ItemGroup>
