@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <ApplicationIcon>icon.ico</ApplicationIcon>
+        <Title>ReysRitoFixer</Title>
+        <Authors>TheKillerey</Authors>
+        <Copyright>ProjectRey</Copyright>
+        <Company>ProjectRey</Company>
+        <Version>1.0.1</Version>
+        <SignAssembly>true</SignAssembly>
+        <PublicSign>true</PublicSign>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="OtherTools\hashes\wad-make.exe"/>
+        <Content Include="OtherTools\hashes\wad-make.exe">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <None Remove="OtherTools\hashes\wad-extract.exe"/>
+        <Content Include="OtherTools\hashes\wad-extract.exe">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <None Remove="OtherTools\ritobin_cli.exe"/>
+        <Content Include="OtherTools\ritobin_cli.exe">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+</Project>
