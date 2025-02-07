@@ -29,6 +29,7 @@ Welcome to **ReysRitoFixer**, a tool designed to help the League of Legends modd
 The **white texture issue** occurs when incorrect parameter mappings are loaded into the game. This happens because the parameter `TextureName` is no longer appropriate for certain engine versions.
 - **Fixable Issue**:
 The tool resolves cases where the parameter needs to be updated to `TexturePath`.
+
 ✅ Example Fix:
 ``` py
   textureName: string = "sample_textures/example.dds"
